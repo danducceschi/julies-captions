@@ -24,8 +24,8 @@
 		:root {
 			--Brown: #A08865;
 			--Dark: #000000;
-			--Light1: #FFE9FF;
-			--Light2: #FFFFFF;
+			--Light1: #FFE9FF; /* Pink text */
+			--Light2: #FFFFFF; /* White background */
 			--Tan: #F7EEE0;
 		}
 
@@ -41,11 +41,7 @@
 			margin: -.13ch 0 .17ch;
 		}
 
-		h2{
-			margin: 0;
-		}
-
-		h3 {
+		h2, h3 {
 			margin: 0;
 		}
 
@@ -143,23 +139,23 @@
                 <td colspan="4"><textarea id="txtSubtitle"></textarea></td>
             </tr>
             <tr>
-                <th colspan="4">Background <span id="divBgNumbers"></span></th>
+                <th colspan="4">Background <span id="divBgNos"></span></th>
             </tr>
             <tr>
                 <td><input id="btnBack" type="button" value="&lt;" onclick="SetBackground(BackgroundIndex - 1);" /></td>
                 <td><input id="btnForward" type="button" value="&gt;" onclick="SetBackground(BackgroundIndex + 1);" /></td>
-                <td><!-- Background title, or Remove link --></td>
+				<td /> <!-- Title of background, or "remove" link -->
                 <td style="text-align: right;"><label><input id="cbMode" type="checkbox"
                     onclick="SetMode();" />Dark Mode</label></td>
             </tr>
             <tr>
                 <td>URL</td>
-                <td colspan="3"><input id="txtBackgroundURL" type="text" size="33" placeholder="Image address" required minlength="13" /></td>
+                <td colspan="3"><input id="txtBgURL" type="text" size="33" placeholder="Image address" required minlength="13" /></td>
             </tr>
             <tr>
                 <td>Style:</td>
-                <td colspan="3"><label><input name="backgroundRepeat" type="radio" value="0" checked />Stretch</label>
-                    <label><input name="backgroundRepeat" type="radio" value="1" />Tile</label></td>
+                <td colspan="3"><label><input name="BackgroundRepeat" type="radio" value="0" checked />Stretch</label>
+                    <label><input name="BackgroundRepeat" type="radio" value="1" />Tile</label></td>
             </tr>
             <tr>
                 <td colspan="4"><input type="submit" value="Add" title="Add background." /></td>
@@ -231,10 +227,10 @@
 		function ChangeCaption(e) {
 			const txtInput = e.srcElement || e.target;
 			const strValue = txtInput.value.trim();
-			const h = document.getElementById("h" + txtInput.id.substring(3));
+			const hTarget = document.getElementById("h" + txtInput.id.substring(3));
 
-			h.style.display = strValue.length > 0 ? "" : "none";
-			h.innerHTML = ReplaceAll(strValue, "\n", "<br />");
+			hTarget.style.display = strValue.length > 0 ? "" : "none";
+			hTarget.innerHTML = ReplaceAll(strValue, "\n", "<br />");
 		}
 
         /**************************************** Methods *****************************************/
@@ -243,18 +239,16 @@
 			/// SUMMARY From the radio buttons.
 			/// RETURNS Boolean.
 			const GetBackgroundRepeat = function() {
-				const backgroundRepeat = document.getElementsByName("backgroundRepeat");
-
-				for (const ele of backgroundRepeat)
-					if (ele.checked)
-						return ele.value === "1";
-			}
+				for (const rb of document.getElementsByName("BackgroundRepeat"))
+					if (rb.checked)
+						return rb.value === "1";
+			};
 			const ResetForm = function() {
-				txtBackgroundURL.value = "";
-			}
+				txtBgURL.value = "";
+			};
 
 			try {
-				AddBackgroundToArray(GetBackgroundRepeat(), txtBackgroundURL.value = txtBackgroundURL.value.trim());
+				AddBackgroundToArray(GetBackgroundRepeat(), txtBgURL.value = txtBgURL.value.trim());
 				SetBackground(Backgrounds.length - 1);
 				ResetForm();
 				SaveCustomBackgrounds();
@@ -272,14 +266,16 @@
 			};
 		}
 
-		function ChangeColor(h, ddl) {
-			h.style.color = ddl.options[ddl.selectedIndex].value;
+		/// SUMMARY Change heading text color.
+		function ChangeColor(h, ddlColor) {
+			h.style.color = ddlColor.options[ddlColor.selectedIndex].value;
 		}
 
-		function ChangeShadow(h, ddl, percent = null) {
+		/// SUMMARY Change heading shadow.
+		function ChangeShadow(h, ddlColor, percent = null) {
 			h.style.textShadow = "0 0 "
 				+ (new Number(percent ?? document.getElementById("div" + h.id.substring(1) + "Pct").innerText.replace("%", "")) / 5.1).toFixed(2)
-				+ "vmin " + ddl.options[ddl.selectedIndex].value;
+				+ "vmin " + ddlColor.options[ddlColor.selectedIndex].value;
 		}
 
 		function Communicate(error, warning) {
@@ -298,18 +294,9 @@
 			}
 		}
 
-		/// SUMMARY Show or hide the editor&#39;s header.
-		function DisplayHeader(bln) {
-			for (const thead of document.getElementsByTagName("tbody")) {
-				thead.style.display = bln ? "" : "none";
-				thead.nextElementSibling.firstElementChild.style.display = bln ? "none" : "";
-				break;
-			}
-		}
-
 		/// SUMMARY Show or hide the editor.
         function DisplayEditor(value) {
-			document.getElementsByClassName('Editor')[0].style.display = value;
+			document.getElementsByClassName("Editor")[0].style.display = value;
 			if (value === "none") {
 				/// SEE ExitFullScreen
 				const RequestFullScreen = function(ele) {
@@ -323,7 +310,7 @@
 						ele.msRequestFullscreen();
 					else
 						Communicate(null, "Requesting full screen is not supported.");
-				}
+				};
 
 				RequestFullScreen(divCaption);
 			}
@@ -340,11 +327,18 @@
 						document.msExitFullscreen();
 					else
 						Communicate(null, "Exiting full screen is not supported.");
-				}
+				};
 
 				ExitFullScreen();
 			}
         }
+
+		/// SUMMARY Show or hide the editor&#39;s header.
+		function DisplayHeader(bln) {
+			const thead = document.getElementsByTagName("tbody")[0];
+			thead.style.display = bln ? "" : "none";
+			thead.nextElementSibling.firstElementChild.style.display = bln ? "none" : "";
+		}
 
         /// REMARKS On capture.
 		/// SEE ALSO https://www.w3schools.com/cssref/css_colors.php
@@ -401,8 +395,8 @@
 
 				h.innerText = txt.innerText = innerText;
 				txt.oninput = ChangeCaption;
-				txt.setAttribute("cols", 32);
 				txt.setAttribute("title", strID + " Text");
+				txt.setAttribute("cols", 32);
 				txt.setAttribute("placeholder", "(no " + strID.toLowerCase() + ")");
 
 				eleParent.append(document.createElement("br"), CreateResizeButton("Smaller", -1), " ");
@@ -415,12 +409,12 @@
 				ChangeColor(h, eleParent.appendChild(CreateColorDDL()));
 				eleParent.append("-on-");
 				ChangeShadow(h, eleParent.appendChild(CreateColorDDL(true)));
-			}
+			};
 			const RetrieveCustomBackgrounds = function() {
 				/// SUMMARY Gets the value of a cookie.
 				/// PARAM NAME Case-sensitive.
 				/// RETURNS The string value found; otherwise an empty string.
-				const GetCookie = function (name) {
+				const GetCookie = function(name) {
 					name = "; " + name + "=";
 
 					const strCookiesSnapshot = "; " + document.cookie + ";";
@@ -431,12 +425,12 @@
 						: ReplaceAll(
 							strCookiesSnapshot.substring(intIndexStart, intIndexStart + strCookiesSnapshot.substring(intIndexStart).indexOf(";"))
 							, SemicolonEscapeSequence, ";");
-				}
+				};
 
 				for (const strBackground of GetCookie("JCC_Backgrounds").split(Delimiter))
 					if (strBackground.length > 0)
 						AddBackgroundToArray(strBackground.charAt(0) === "1", strBackground.substring(1));
-			}
+			};
 
 			SetMode();
 			RetrieveCustomBackgrounds();
@@ -524,7 +518,7 @@
 				catch (error) {
 					Communicate(error);
 				}
-			}
+			};
 			let strCookieValue = "";
 
 			for (let index = 1; index < Backgrounds.length; index++)
@@ -540,17 +534,17 @@
 			btnBack.disabled = (BackgroundIndex = index) === 0;
 			btnForward.disabled = index === Backgrounds.length - 1;
 
-			const eleBgTitle = btnForward.parentElement.nextElementSibling;
-
 			divCaption.style.backgroundImage = "url(\"" + Backgrounds[index].URL + "\")";
 			divCaption.style.backgroundAttachment = Backgrounds[index].Repeat ? "" : "fixed";
 			divCaption.style.backgroundSize = Backgrounds[index].Repeat ? "" : "100% 100%";
 
-			divBgNumbers.innerText = index + 1 + " of " + Backgrounds.length;
+			const eleBgTitle = btnForward.parentElement.nextElementSibling;
+
+			divBgNos.innerText = index + 1 + " of " + Backgrounds.length;
 			if (Backgrounds[index].Title)
 				eleBgTitle.innerText = Backgrounds[index].Title;
 			else {
-				let a = document.createElement("a");
+				const a = document.createElement("a");
 
 				eleBgTitle.innerText = "Custom (";
 				a.setAttribute("href", "javascript:;");
