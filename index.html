@@ -1,0 +1,571 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="content-language" content="en-US" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="Expires" content="-1" />
+    <meta http-equiv="Pragma" content="no-cache" />
+
+    <title>Julie's Clapperboard Captions</title>
+
+    <link rel="shortcut icon" href="julies-clapperboard-captions.ico" type="image/vnd.microsoft.icon"
+        sizes="256x256 128x128 96x96 64x64 48x48 32x32 16x16" />
+    <link rel="icon" href="julies-clapperboard-captions-android-modern.png" type="image/png" sizes="192x192" />
+    <link rel="icon" href="julies-clapperboard-captions-android.png" type="image/png" sizes="48x48" />
+    <link rel="apple-touch-icon" href="julies-clapperboard-captions-iphone.png" type="image/png" sizes="180x180" />
+    <link rel="apple-touch-icon" href="julies-clapperboard-captions-ipad.png" type="image/png" sizes="167x167" />
+    <link rel="icon" href="julies-clapperboard-captions-opera.png" type="image/png" sizes="122x199" /><!-- Speed Dial -->
+
+    <meta name="robots" content="index, nofollow" />
+    <meta name="description" content="Create digital signs, and clapperboard captions for photos of first school days, birthdays, etc." />
+
+    <style>
+		:root {
+			--Brown: #A08865;
+			--Dark: #000000;
+			--Light1: #FFE9FF;
+			--Light2: #FFFFFF;
+			--Tan: #F7EEE0;
+		}
+
+
+		body {
+			font-family: Arial, "Trebuchet MS";
+			font-size: 2.2ch;
+			margin: 0;
+		}
+
+		h1 {
+			font-size: 2.86ch;
+			margin: -.13ch 0 .17ch;
+		}
+
+		h2{
+			margin: 0;
+		}
+
+		h3 {
+			margin: 0;
+		}
+
+		input[type=button], input[type=submit], select {
+			font-size: 1.75ch;
+		}
+
+		textarea {
+			font-size: large;
+		}
+
+
+		.Caption {
+			display: grid;
+			height: 100vh;
+			place-items: center;
+			text-align: center;
+		}
+
+		.Description {
+			padding-bottom: 1.12ch;
+			text-align: center;
+		}
+
+		.Editor {
+			background-color: var(--Tan);
+			border: 1px ridge var(--Brown);
+			left: 50vw;
+			padding: .21ch .45ch .32ch .61ch;
+			position: absolute;
+			top: 42vh;
+			transform: translate(-50%, -50%);
+			z-index: 1;
+		}
+
+		.hrTop {
+			border-top: 1px dashed var(--Brown);
+			padding-top: .29ch;
+			text-align: right;
+		}
+
+		.TextBtn {
+			font-weight: bold;
+			text-decoration: none;
+		}
+		a:hover.TextBtn {
+			text-decoration: underline;
+		}
+
+		.Transparent {
+			font-style: italic;
+		}
+
+
+		@media only screen and (max-height: 648px) {
+			.Editor {
+				top: 81vh;
+			}
+		}
+
+		@media only print {
+			body {
+				margin-top: 1px;
+			}
+		}
+    </style>
+</head>
+<body>
+    <form action="javascript: AddBackground();" class="Editor">
+        <table>
+            <tbody>
+			<tr>
+                <td><img src="julies-clapperboard-captions-android.png" height="32" width="32" alt="Logo" /></td>
+                <th colspan="3"><a href="index.html" title="Reload application."><h1>Julie&#39;s Clapperboard Captions</h1></a></th>
+            </tr>
+            <tr>
+				<td colspan="4" class="Description">Create digital signs, and clapperboard captions for
+					photos.<a href="javascript:;" onclick="DisplayHeader(false);" class="TextBtn" title="Collapse header.">&nbsp;&uarr;&nbsp;</a></td>
+            </tr>
+			</tbody>
+            <tbody>
+            <tr style="display: none;">
+				<th colspan="4"><a href="javascript:;" onclick="DisplayHeader(true);" class="TextBtn" title="Expand header.">&nbsp;&darr;&nbsp;</a></th>
+            </tr>
+            <tr>
+                <th colspan="4">Title</th>
+            </tr>
+            <tr>
+                <td colspan="4"><textarea id="txtTitle"></textarea></td>
+            </tr>
+            <tr>
+                <th colspan="4">Subtitle</th>
+            </tr>
+            <tr>
+                <td colspan="4"><textarea id="txtSubtitle"></textarea></td>
+            </tr>
+            <tr>
+                <th colspan="4">Background <span id="divBgNumbers"></span></th>
+            </tr>
+            <tr>
+                <td><input id="btnBack" type="button" value="&lt;" onclick="SetBackground(BackgroundIndex - 1);" /></td>
+                <td><input id="btnForward" type="button" value="&gt;" onclick="SetBackground(BackgroundIndex + 1);" /></td>
+                <td><!-- Background title, or Remove link --></td>
+                <td style="text-align: right;"><label><input id="cbMode" type="checkbox"
+                    onclick="SetMode();" />Dark Mode</label></td>
+            </tr>
+            <tr>
+                <td>URL</td>
+                <td colspan="3"><input id="txtBackgroundURL" type="text" size="33" placeholder="Image address" required minlength="13" /></td>
+            </tr>
+            <tr>
+                <td>Style:</td>
+                <td colspan="3"><label><input name="backgroundRepeat" type="radio" value="0" checked />Stretch</label>
+                    <label><input name="backgroundRepeat" type="radio" value="1" />Tile</label></td>
+            </tr>
+            <tr>
+                <td colspan="4"><input type="submit" value="Add" title="Add background." /></td>
+            </tr>
+            <tr>
+                <td colspan="4" class="hrTop">
+                    <input type="button" value="Hide Editor" onclick="DisplayEditor('none');" />&nbsp;
+                    Tap page to reshow.</td>
+            </tr>
+            </tbody>
+        </table>
+    </form>
+
+    <div id="divCaption" class="Caption" onclick="DisplayEditor('');">
+        <h2 id="hTitle" style="font-size: 22vmin;"></h2>
+
+        <h3 id="hSubtitle" style="font-size: 19vmin;"></h3>
+    </div>
+
+    <script type="text/javascript">
+    //<![CDATA[
+		/*************************************** Constants ****************************************/
+
+		const Delimiter = "$#@!~";
+
+        const SemicolonEscapeSequence = "~!@#$";
+
+		/*************************************** Properties ***************************************/
+
+        var BackgroundIndex;
+
+        var Backgrounds = [
+            {
+                Repeat: false,
+                Title: "Party (birthday)",
+				URL: "party-background.gif"
+            },
+			{
+				Repeat: false,
+				Title: "Study (first school day)",
+				URL: "study-background.png"
+			},
+			{
+				Repeat: true,
+				Title: "Turf",
+				URL: "turf-background.jpg"
+			},
+			{
+				Repeat: false,
+				Title: "Meeting (session)",
+				URL: "meeting-background.png"
+			},
+			{
+				Repeat: true,
+				Title: "Bricks (wall or road)",
+				URL: "brick-background.jpg"
+			},
+			{
+				Repeat: true,
+				Title: "Sand",
+				URL: "sand-background.jpg"
+			}
+        ];
+
+		/***************************************** Events *****************************************/
+
+		window.addEventListener("DOMContentLoaded", InitCaption, true);
+
+		function ChangeCaption(e) {
+			const txtInput = e.srcElement || e.target;
+			const strValue = txtInput.value.trim();
+			const h = document.getElementById("h" + txtInput.id.substring(3));
+
+			h.style.display = strValue.length > 0 ? "" : "none";
+			h.innerHTML = ReplaceAll(strValue, "\n", "<br />");
+		}
+
+        /**************************************** Methods *****************************************/
+
+        function AddBackground() {
+			/// SUMMARY From the radio buttons.
+			/// RETURNS Boolean.
+			const GetBackgroundRepeat = function() {
+				const backgroundRepeat = document.getElementsByName("backgroundRepeat");
+
+				for (const ele of backgroundRepeat)
+					if (ele.checked)
+						return ele.value === "1";
+			}
+			const ResetForm = function() {
+				txtBackgroundURL.value = "";
+			}
+
+			try {
+				AddBackgroundToArray(GetBackgroundRepeat(), txtBackgroundURL.value = txtBackgroundURL.value.trim());
+				SetBackground(Backgrounds.length - 1);
+				ResetForm();
+				SaveCustomBackgrounds();
+			}
+			catch (error) {
+				Communicate(error);
+			}
+        }
+
+		function AddBackgroundToArray(repeat, url, title = null, arr = Backgrounds) {
+			arr[arr.length] = {
+				Repeat: repeat,
+				Title: title,
+				URL: url
+			};
+		}
+
+		function ChangeColor(h, ddl) {
+			h.style.color = ddl.options[ddl.selectedIndex].value;
+		}
+
+		function ChangeShadow(h, ddl, percent = null) {
+			h.style.textShadow = "0 0 "
+				+ (new Number(percent ?? document.getElementById("div" + h.id.substring(1) + "Pct").innerText.replace("%", "")) / 5.1).toFixed(2)
+				+ "vmin " + ddl.options[ddl.selectedIndex].value;
+		}
+
+		function Communicate(error, warning) {
+			const Debug = false;
+
+			if (error) {
+				console.error(error);
+				if (Debug)
+					alert(error);
+			}
+
+			if (warning) {
+				console.warn(warning);
+				if (Debug)
+					alert(warning);
+			}
+		}
+
+		/// SUMMARY Show or hide the editor&#39;s header.
+		function DisplayHeader(bln) {
+			for (const thead of document.getElementsByTagName("tbody")) {
+				thead.style.display = bln ? "" : "none";
+				thead.nextElementSibling.firstElementChild.style.display = bln ? "none" : "";
+				break;
+			}
+		}
+
+		/// SUMMARY Show or hide the editor.
+        function DisplayEditor(value) {
+			document.getElementsByClassName('Editor')[0].style.display = value;
+			if (value === "none") {
+				/// SEE ExitFullScreen
+				const RequestFullScreen = function(ele) {
+					if (ele.requestFullscreen)
+						ele.requestFullscreen();
+					// Safari
+					else if (ele.webkitRequestFullscreen)
+						ele.webkitRequestFullscreen();
+					// IE11
+					else if (ele.msRequestFullscreen)
+						ele.msRequestFullscreen();
+					else
+						Communicate(null, "Requesting full screen is not supported.");
+				}
+
+				RequestFullScreen(divCaption);
+			}
+			else if (document.fullscreenElement) {
+				/// SEE RequestFullScreen
+				const ExitFullScreen = function() {
+					if (document.exitFullscreen)
+						document.exitFullscreen();
+					// Safari
+					else if (document.webkitExitFullscreen)
+						document.webkitExitFullscreen();
+					// IE11
+					else if (document.msExitFullscreen)
+						document.msExitFullscreen();
+					else
+						Communicate(null, "Exiting full screen is not supported.");
+				}
+
+				ExitFullScreen();
+			}
+        }
+
+        /// REMARKS On capture.
+		/// SEE ALSO https://www.w3schools.com/cssref/css_colors.php
+        function InitCaption() {
+			const InitTitle = function(h, innerText) {
+				const CreateColorDDL = function(transparent = false) {
+					const CreateColorOption = function(color, darkMode = false) {
+						const opt = document.createElement("option");
+
+						// The default caption color(s)
+						opt.selected = color === (transparent ? "Gold" : "Black");
+						if (color === "Transparent")
+							opt.setAttribute("class", "Transparent");
+						else {
+							opt.style.backgroundColor = color;
+							if (darkMode)
+								opt.style.color = "var(--Light1)";
+						}
+						opt.innerText/* and value */ = color;
+
+						return opt;
+					};
+					const ddl = document.createElement("select");
+
+					ddl.setAttribute("id", "ddl" + strID + "Color" + (transparent ? "2" : "1"));
+					ddl.setAttribute("title", (transparent ? "Shadow" : "Text") + " Color");
+					ddl.setAttribute("onchange", (transparent ? "ChangeShadow(" : "ChangeColor(")
+						+ h.id + ", this);");
+					if (transparent)
+						ddl.appendChild(CreateColorOption("Transparent"));
+					ddl.append(CreateColorOption("Aqua"), CreateColorOption("Bisque"), CreateColorOption("Black", true)
+						, CreateColorOption("DarkGreen", true), CreateColorOption("DarkGrey"), CreateColorOption("Fuchsia", true)
+						, CreateColorOption("Gold"), CreateColorOption("HoneyDew"), CreateColorOption("Indigo", true)
+						, CreateColorOption("LightYellow"), CreateColorOption("Maroon", true), CreateColorOption("MidnightBlue", true)
+						, CreateColorOption("Orange"), CreateColorOption("PaleVioletRed", true), CreateColorOption("Purple", true)
+						, CreateColorOption("Red", true), CreateColorOption("SaddleBrown", true), CreateColorOption("SpringGreen")
+						, CreateColorOption("Tomato", true), CreateColorOption("White"), CreateColorOption("Yellow"));
+
+					return ddl;
+				};
+				const CreateResizeButton = function(value, deltaCH) {
+					const btn = document.createElement("input");
+
+					btn.setAttribute("id", "btn" + strID + value);
+					btn.setAttribute("type", "button");
+					btn.setAttribute("value", value);
+					btn.setAttribute("onclick", "Resize(" + h.id + ", " + deltaCH + ");");
+
+					return btn
+				};
+				const strID = h.id.substring(1);
+				const txt = document.getElementById("txt" + strID);
+				let eleParent = txt.parentElement;
+
+				h.innerText = txt.innerText = innerText;
+				txt.oninput = ChangeCaption;
+				txt.setAttribute("cols", 32);
+				txt.setAttribute("title", strID + " Text");
+				txt.setAttribute("placeholder", "(no " + strID.toLowerCase() + ")");
+
+				eleParent.append(document.createElement("br"), CreateResizeButton("Smaller", -1), " ");
+				eleParent.appendChild(document.createElement("span")).setAttribute("id", "div" + strID + "Pct");
+				eleParent.append(" ", CreateResizeButton("Larger", 1));
+				eleParent.appendChild(document.createElement("span")).innerHTML = "&nbsp; ";
+				eleParent = eleParent.appendChild(document.createElement("span"));
+				Resize(h, 0);
+				eleParent.style.whiteSpace = "nowrap";
+				ChangeColor(h, eleParent.appendChild(CreateColorDDL()));
+				eleParent.append("-on-");
+				ChangeShadow(h, eleParent.appendChild(CreateColorDDL(true)));
+			}
+			const RetrieveCustomBackgrounds = function() {
+				/// SUMMARY Gets the value of a cookie.
+				/// PARAM NAME Case-sensitive.
+				/// RETURNS The string value found; otherwise an empty string.
+				const GetCookie = function (name) {
+					name = "; " + name + "=";
+
+					const strCookiesSnapshot = "; " + document.cookie + ";";
+					const intIndexStart = name.length + strCookiesSnapshot.indexOf(name);
+
+					return name.length > intIndexStart
+						? ""
+						: ReplaceAll(
+							strCookiesSnapshot.substring(intIndexStart, intIndexStart + strCookiesSnapshot.substring(intIndexStart).indexOf(";"))
+							, SemicolonEscapeSequence, ";");
+				}
+
+				for (const strBackground of GetCookie("JCC_Backgrounds").split(Delimiter))
+					if (strBackground.length > 0)
+						AddBackgroundToArray(strBackground.charAt(0) === "1", strBackground.substring(1));
+			}
+
+			SetMode();
+			RetrieveCustomBackgrounds();
+            SetBackground(0);
+
+			InitTitle(hTitle, "Happy Birthday");
+            InitTitle(hSubtitle, new Date().toLocaleString("en-US", {
+				day: "numeric",
+                month: "long",
+				year: "numeric"
+			}));
+		} // end InitCaption
+
+		function RemoveBackground(index) {
+			{
+				const arrBackgrounds = [];
+				for (let index2 = 0; index2 < Backgrounds.length; index2++)
+					if (index2 != index)
+						AddBackgroundToArray(Backgrounds[index2].Repeat, Backgrounds[index2].URL, Backgrounds[index2].Title, arrBackgrounds);
+				Backgrounds = arrBackgrounds;
+			}
+			SetBackground(index - 1);
+			SaveCustomBackgrounds();
+		}
+
+		/// SUMMARY Replace all instances of REGEXP with REPLACEMENT.
+		/// PARAM REGEXP Can be a string instead.
+		function ReplaceAll(str, regexp, replacement) {
+			if (str != null) {
+				let prev = "";
+
+				while (str != prev) {
+					prev = str;
+					str = str.replace(regexp, replacement);
+				}
+			}
+
+			return str;
+		}
+
+		function Resize(h, deltaCH) {
+			const Unit = "vmin";
+			const strID = h.id.substring(1);
+			const bytPercent = new Number(h.style.fontSize.replace(Unit, "")) + deltaCH;
+
+			if (deltaCH != 0) {
+				switch (bytPercent) {
+					case 100:
+						document.getElementById("btn" + strID + "Larger").disabled = true;
+						break;
+					case 99:
+						document.getElementById("btn" + strID + "Larger").disabled = false;
+						break;
+					case 2:
+						document.getElementById("btn" + strID + "Smaller").disabled = false;
+						break;
+					case 1:
+						document.getElementById("btn" + strID + "Smaller").disabled = true;
+				}
+				h.style.fontSize = bytPercent + Unit;
+				ChangeShadow(h, document.getElementById("ddl" + strID + "Color2"), bytPercent);
+			}
+			document.getElementById("div" + strID + "Pct").innerText = bytPercent + "%";
+		}
+
+		function SaveCustomBackgrounds() {
+			/// SUMMARY Creates or updates a cookie.
+			/// PARAM NAME Case-sensitive.
+			/// PARAM TIMEOUTMINUTES Optional. If not received, then the cookie will persist until the browser is closed.
+			const SetCookie = function(name, value, timeoutMinutes) {
+				try {
+					if (typeof value === "string")
+						value = ReplaceAll(value, ";", SemicolonEscapeSequence);
+					timeoutMinutes = value === "" ? -1/* Delete */ : parseFloat(timeoutMinutes);
+
+					let expires = "";
+
+					if (!isNaN(timeoutMinutes)) {
+						expires = new Date();
+						expires.setTime(expires.getTime() + timeoutMinutes * 60000);
+						expires = "; expires=" + expires.toUTCString();
+					}
+					document.cookie = name + "=" + value + expires + "; path=/";
+				}
+				catch (error) {
+					Communicate(error);
+				}
+			}
+			let strCookieValue = "";
+
+			for (let index = 1; index < Backgrounds.length; index++)
+				if (!Backgrounds[index].Title && strCookieValue.length + Backgrounds[index].URL.length < 3600)
+					strCookieValue += (strCookieValue.length > 0 ? Delimiter : "")
+						+ (Backgrounds[index].Repeat ? "1" : "0")
+						+ Backgrounds[index].URL;
+
+			SetCookie("JCC_Backgrounds", strCookieValue, 525960/* One year */);
+		}
+
+        function SetBackground(index) {
+			btnBack.disabled = (BackgroundIndex = index) === 0;
+			btnForward.disabled = index === Backgrounds.length - 1;
+
+			const eleBgTitle = btnForward.parentElement.nextElementSibling;
+
+			divCaption.style.backgroundImage = "url(\"" + Backgrounds[index].URL + "\")";
+			divCaption.style.backgroundAttachment = Backgrounds[index].Repeat ? "" : "fixed";
+			divCaption.style.backgroundSize = Backgrounds[index].Repeat ? "" : "100% 100%";
+
+			divBgNumbers.innerText = index + 1 + " of " + Backgrounds.length;
+			if (Backgrounds[index].Title)
+				eleBgTitle.innerText = Backgrounds[index].Title;
+			else {
+				let a = document.createElement("a");
+
+				eleBgTitle.innerText = "Custom (";
+				a.setAttribute("href", "javascript:;");
+				a.setAttribute("onclick", "RemoveBackground(" + index + ");");
+				a.innerText = "remove";
+				eleBgTitle.append(a, ")");
+			}
+        }
+
+		function SetMode() {
+			txtSubtitle.style.backgroundColor = txtTitle.style.backgroundColor
+				= divCaption.style.backgroundColor = "var(--" + (cbMode.checked ? "Dark" : "Light2") + ")";
+			txtSubtitle.style.color = txtTitle.style.color = "var(--" + (cbMode.checked ? "Light1" : "Dark") + ")";
+		}
+    //]]>
+    </script>
+</body>
+</html>
