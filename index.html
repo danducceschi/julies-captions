@@ -150,7 +150,8 @@
             </tr>
             <tr>
                 <td>URL</td>
-                <td colspan="3"><input id="txtBgURL" type="text" size="33" placeholder="Image address" required minlength="13" /></td>
+                <td colspan="3"><input id="txtBgURL" type="text" size="33" placeholder="Image address" required
+					minlength="13" onchange="this.value = this.value.trim();" /></td>
             </tr>
             <tr>
                 <td>Style:</td>
@@ -248,7 +249,7 @@
 			};
 
 			try {
-				AddBackgroundToArray(GetBackgroundRepeat(), txtBgURL.value = txtBgURL.value.trim());
+				AddBackgroundToArray(GetBackgroundRepeat(), txtBgURL.value);
 				SetBackground(Backgrounds.length - 1);
 				ResetForm();
 				SaveCustomBackgrounds();
