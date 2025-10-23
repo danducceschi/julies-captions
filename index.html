@@ -49,6 +49,10 @@
 			font-size: 1.75ch;
 		}
 
+		select {
+			margin-top: .45ex;
+		}
+
 		textarea {
 			font-size: large;
 		}
@@ -72,7 +76,7 @@
 			left: 50vw;
 			padding: .21ch .45ch .32ch .61ch;
 			position: absolute;
-			top: 42vh;
+			top: 35vh;
 			transform: translate(-50%, -50%);
 			z-index: 1;
 		}
@@ -96,9 +100,19 @@
 		}
 
 
-		@media only screen and (max-height: 648px) {
+		@media only screen and (max-height: 939px) {
 			.Editor {
-				top: 81vh;
+				top: 51.4vh;
+			}
+		}
+		@media only screen and (max-height: 639px) {
+			.Editor {
+				top: 93vh;
+			}
+		}
+		@media only screen and (max-height: 353px) {
+			.Editor {
+				top: 100vh;
 			}
 		}
 
@@ -271,6 +285,10 @@
 			h.style.color = ddlColor.options[ddlColor.selectedIndex].value;
 		}
 
+		function ChangeFont(h, ddlFamily) {
+			h.style.fontFamily = ddlFamily.options[ddlFamily.selectedIndex].value;
+		}
+
 		/// SUMMARY Change heading shadow.
 		function ChangeShadow(h, ddlColor, percent = null) {
 			h.style.textShadow = "0 0 "
@@ -379,6 +397,30 @@
 
 					return ddl;
 				};
+				const CreateFontDDL = function(){
+					const CreateFontOption = function(family) {
+						const opt = document.createElement("option");
+
+						opt.setAttribute("value", family);
+						// The default caption font
+						opt.selected = family === "Arial";
+						opt.style.fontFamily = family;
+						opt.innerText = ReplaceAll(family.split(", ")[0], /(^')|'$/, "");
+
+						return opt;
+					};
+					const Families = new Array("Arial", "'Brush Script MT', SignPainter-HouseScript"
+						, "'Courier New'", "Georgia", "'Times New Roman'", "'Trebuchet MS'", "Verdana");
+					const ddl = document.createElement("select");
+
+					ddl.setAttribute("id", "ddl" + strID + "Family");
+					ddl.setAttribute("title", "Font Family");
+					ddl.setAttribute("onchange", "ChangeFont(" + h.id + ", this);");
+					for (const strFamily of Families)
+						ddl.appendChild(CreateFontOption(strFamily));
+
+					return ddl;
+				};
 				const CreateResizeButton = function(value, deltaCH) {
 					const btn = document.createElement("input");
 
@@ -409,6 +451,7 @@
 				ChangeColor(h, eleParent.appendChild(CreateColorDDL()));
 				eleParent.append("-on-");
 				ChangeShadow(h, eleParent.appendChild(CreateColorDDL(true)));
+				eleParent.parentElement.append(document.createElement("br"), "Font: ", CreateFontDDL());
 			};
 			const RetrieveCustomBackgrounds = function() {
 				/// SUMMARY Gets the value of a cookie.
