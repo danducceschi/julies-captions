@@ -239,8 +239,27 @@
 		window.addEventListener("DOMContentLoaded", InitCaption, true);
 
 		function ChangeCaption(e) {
+			const Space = function(htmlStr) {
+				/// RETURNS Boolean.
+				const IsSpace = function(char) {
+					const Space = " \t";
+
+					return Space.indexOf(char) > -1;
+				};
+
+				if (htmlStr.length >= 2) {
+					// Trim.
+					while (IsSpace(htmlStr.charAt(0)) && IsSpace(htmlStr.charAt(htmlStr.length - 1)))
+						htmlStr = htmlStr.substring(1, htmlStr.length - 1);
+					// Move from center:
+					htmlStr = ReplaceAll(htmlStr, /( |\t)((&nbsp;)*)$/, "&nbsp;$2");
+					htmlStr = ReplaceAll(htmlStr, /^((&nbsp;)*)( |\t)/, "$1&nbsp;");
+				}
+				
+				return htmlStr;
+			};
 			const txtInput = e.srcElement || e.target;
-			const strValue = txtInput.value.trim();
+			const strValue = Space(txtInput.value);
 			const hTarget = document.getElementById("h" + txtInput.id.substring(3));
 
 			hTarget.style.display = strValue.length > 0 ? "" : "none";
