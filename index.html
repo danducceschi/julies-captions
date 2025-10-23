@@ -247,23 +247,25 @@
 					return Space.indexOf(char) > -1;
 				};
 
-				if (htmlStr.length >= 2) {
-					// Trim.
-					while (IsSpace(htmlStr.charAt(0)) && IsSpace(htmlStr.charAt(htmlStr.length - 1)))
-						htmlStr = htmlStr.substring(1, htmlStr.length - 1);
-					// Move from center:
-					htmlStr = ReplaceAll(htmlStr, /( |\t)((&nbsp;)*)$/, "&nbsp;$2");
-					htmlStr = ReplaceAll(htmlStr, /^((&nbsp;)*)( |\t)/, "$1&nbsp;");
-				}
+				htmlStr = htmlStr.split("\n");
+				for (let intLine = 0; intLine < htmlStr.length; intLine++)
+					if (htmlStr[intLine].length >= 2) {
+						// Trim.
+						while (IsSpace(htmlStr[intLine].charAt(0)) && IsSpace(htmlStr[intLine].charAt(htmlStr[intLine].length - 1)))
+							htmlStr[intLine] = htmlStr[intLine].substring(1, htmlStr[intLine].length - 1);
+						// Move from center:
+						htmlStr[intLine] = ReplaceAll(htmlStr[intLine], /( |\t)((&nbsp;)*)$/, "&nbsp;$2");
+						htmlStr[intLine] = ReplaceAll(htmlStr[intLine], /^((&nbsp;)*)( |\t)/, "$1&nbsp;");
+					}
 				
-				return htmlStr;
+				return htmlStr.join("<br />");
 			};
 			const txtInput = e.srcElement || e.target;
 			const strValue = Space(txtInput.value);
 			const hTarget = document.getElementById("h" + txtInput.id.substring(3));
 
 			hTarget.style.display = strValue.length > 0 ? "" : "none";
-			hTarget.innerHTML = ReplaceAll(strValue, "\n", "<br />");
+			hTarget.innerHTML = strValue;
 		}
 
         /**************************************** Methods *****************************************/
